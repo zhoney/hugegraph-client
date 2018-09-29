@@ -59,11 +59,14 @@ public class Edge extends GraphElement {
         return this.source;
     }
 
-    public void source(Object source) {
-        this.source = source;
+    public void source(Object sourceId) {
+        E.checkArgumentNotNull(sourceId, "The source vertex id can't be null");
+        this.source = sourceId;
     }
 
     public Edge source(Vertex source) {
+        E.checkArgumentNotNull(source.id(),
+                               "The source vertex id can't be null");
         this.source = source.id();
         this.sourceLabel = source.label();
         return this;
@@ -73,18 +76,21 @@ public class Edge extends GraphElement {
         return this.target;
     }
 
-    public void target(Object target) {
-        this.target = target;
+    public void target(Object targetId) {
+        E.checkArgumentNotNull(targetId, "The target vertex id can't be null");
+        this.target = targetId;
     }
 
     public Edge target(Vertex target) {
+        E.checkArgumentNotNull(target.id(),
+                               "The target vertex id can't be null");
         this.target = target.id();
         this.targetLabel = target.label();
         return this;
     }
 
     public String sourceLabel() {
-        return sourceLabel;
+        return this.sourceLabel;
     }
 
     public void sourceLabel(String sourceLabel) {
@@ -92,7 +98,7 @@ public class Edge extends GraphElement {
     }
 
     public String targetLabel() {
-        return targetLabel;
+        return this.targetLabel;
     }
 
     public void targetLabel(String targetLabel) {
