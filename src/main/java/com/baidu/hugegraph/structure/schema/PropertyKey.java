@@ -21,6 +21,7 @@ package com.baidu.hugegraph.structure.schema;
 
 import com.baidu.hugegraph.driver.SchemaManager;
 import com.baidu.hugegraph.structure.SchemaElement;
+import com.baidu.hugegraph.structure.constant.AggregateType;
 import com.baidu.hugegraph.structure.constant.Cardinality;
 import com.baidu.hugegraph.structure.constant.DataType;
 import com.baidu.hugegraph.structure.constant.HugeType;
@@ -34,12 +35,15 @@ public class PropertyKey extends SchemaElement {
     private DataType dataType;
     @JsonProperty("cardinality")
     private Cardinality cardinality;
+    @JsonProperty("aggregate_type")
+    private AggregateType aggregateType;
 
     @JsonCreator
     public PropertyKey(@JsonProperty("name") String name) {
         super(name);
         this.dataType = DataType.TEXT;
         this.cardinality = Cardinality.SINGLE;
+        this.aggregateType = AggregateType.NONE;
     }
 
     @Override
@@ -55,12 +59,16 @@ public class PropertyKey extends SchemaElement {
         return this.cardinality;
     }
 
+    public AggregateType aggregateType() {
+        return this.aggregateType;
+    }
+
     @Override
     public String toString() {
-        return String.format("{name=%s, cardinality=%s, " +
-                             "dataType=%s, properties=%s}",
-                             this.name, this.cardinality,
-                             this.dataType, this.properties);
+        return String.format("{name=%s, cardinality=%s, dataType=%s, " +
+                             "aggregateType=%s, properties=%s}",
+                             this.name, this.cardinality, this.dataType,
+                             this.aggregateType, this.properties);
     }
 
     public interface Builder extends SchemaBuilder<PropertyKey> {
@@ -94,6 +102,16 @@ public class PropertyKey extends SchemaElement {
         Builder valueList();
 
         Builder valueSet();
+
+        Builder aggregateType(AggregateType aggregateType);
+
+        Builder calcSum();
+
+        Builder calcMax();
+
+        Builder calcMin();
+
+        Builder calcOld();
 
         Builder userdata(String key, Object val);
 
@@ -222,6 +240,32 @@ public class PropertyKey extends SchemaElement {
         @Override
         public Builder valueSet() {
             this.propertyKey.cardinality = Cardinality.SET;
+            return this;
+        }
+
+        @Override
+        public Builder aggregateType(AggregateType aggregateType) {
+            this.propertyKey.aggregateType = aggregateType;
+            return this;
+        }
+
+        @Override public Builder calcSum() {
+            this.propertyKey.aggregateType = AggregateType.SUM;
+            return this;
+        }
+
+        @Override public Builder calcMax() {
+            this.propertyKey.aggregateType = AggregateType.MAX;
+            return this;
+        }
+
+        @Override public Builder calcMin() {
+            this.propertyKey.aggregateType = AggregateType.MIN;
+            return this;
+        }
+
+        @Override public Builder calcOld() {
+            this.propertyKey.aggregateType = AggregateType.OLD;
             return this;
         }
 
